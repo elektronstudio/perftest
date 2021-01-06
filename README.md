@@ -2,16 +2,26 @@
 
 Peformance testing for elektron.live platform
 
-### Run the tests
+#### Install dependencies
 
 ```
 npm i
+```
+
+#### Create test audience video
+
+```
+curl https://sample-videos.com/video123/mp4/360/big_buck_bunny_360p_1mb.mp4 > test_audience.mp4
+ffmpeg -i test_audience.mp4 -pix_fmt yuv420p -t 00:00:02.0 test_audience.y4m
+```
+
+#### Upstream performer video
+
+curl https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_1mb.mp4 > test_performer.mp4 \
+ffmpeg -stream_loop -1 -re -i test_performer.mp4 -c:v libx264 -crf 19 -f flv rtmp://o1.babahhcdn.com:1935/bb1150-lo/perftest
+
+#### Run the tests
+
+```
 node index.js
-```
-
-### Create test video
-
-```
-curl https://sample-videos.com/video123/mp4/360/big_buck_bunny_360p_1mb.mp4 > test.mp4
-ffmpeg -i test.mp4 -pix_fmt yuv420p -t 00:00:02.0 test.y4m
 ```

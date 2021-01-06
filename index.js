@@ -2,18 +2,19 @@ const { Cluster } = require("puppeteer-cluster");
 
 const siteUrl = "https://elektron.live/perftest";
 const count = 5;
-const delay = 1000 * 60;
+const delay = 1000 * 30;
 
 (async () => {
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_CONTEXT,
     maxConcurrency: count,
+    monitor: true,
     puppeteerOptions: {
-      headless: true,
+      headless: false,
       args: [
         "--use-fake-ui-for-media-stream",
         "--use-fake-device-for-media-stream",
-        "--use-file-for-fake-video-capture=./test.y4m",
+        "--use-file-for-fake-video-capture=./test_audience.y4m",
       ],
     },
   });
@@ -29,10 +30,11 @@ const delay = 1000 * 60;
     await page.screenshot({
       path: `./screenshots/screenshot-${worker.id}.jpg`,
     });
-    await page.close();
   });
 
   Array.from({ length: count }).forEach(() => cluster.queue(siteUrl));
+
+  //cluster.queue(siteUrl);
 
   await cluster.idle();
   await cluster.close();
