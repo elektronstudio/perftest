@@ -4,10 +4,12 @@ Peformance testing for elektron.live platform
 
 ### Usage
 
+It's assumed you have `node`, `curl` and `ffmpeg` installed.
+
 #### 1. Install dependencies
 
 ```
-npm i
+npm install
 ```
 
 #### 2. Create test audience video
