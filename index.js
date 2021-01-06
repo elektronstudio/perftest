@@ -1,8 +1,11 @@
 const { Cluster } = require("puppeteer-cluster");
 
+const waitFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const siteUrl = "https://elektron.live/perftest";
+//const siteUrl = "http://127.0.0.1:5501/perftest";
+
 const count = 5;
-const delay = 1000 * 30;
 
 (async () => {
   const cluster = await Cluster.launch({
@@ -10,7 +13,7 @@ const delay = 1000 * 30;
     maxConcurrency: count,
     monitor: true,
     puppeteerOptions: {
-      headless: false,
+      // headless: false,
       args: [
         "--use-fake-ui-for-media-stream",
         "--use-fake-device-for-media-stream",
@@ -26,15 +29,15 @@ const delay = 1000 * 30;
     if (button) {
       await button.click();
     }
-    await new Promise((t) => setTimeout(t, delay));
+    await waitFor(5000);
     await page.screenshot({
       path: `./screenshots/screenshot-${worker.id}.jpg`,
     });
+    await waitFor(1000);
+    await page.close({ runBeforeUnload: true });
   });
 
   Array.from({ length: count }).forEach(() => cluster.queue(siteUrl));
-
-  //cluster.queue(siteUrl);
 
   await cluster.idle();
   await cluster.close();
